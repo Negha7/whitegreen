@@ -1,0 +1,57 @@
+Q 10
+Configure a GitHub Actions workflow to automatically build and test a Python application.
+GitHub Actions
+Python
+pytest
+app.py
+python
+copy
+def add(a, b):
+    return a + b
+
+def greet(name):
+    return f"Hello, {name}!"
+test_app.py
+python
+copy
+from app import add, greet
+
+def test_add():
+    assert add(2, 3) == 5
+
+def test_greet():
+    assert greet("World") == "Hello, World!"
+requirements.txt
+text
+copy
+pytest
+.github/workflows/python-test.yml
+yaml
+copy
+name: Python Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest test_app.py -v
+Expected Output
+✅
+GitHub Actions shows 2 passed with green checkmarks. Every push to main automatically runs the tests.
