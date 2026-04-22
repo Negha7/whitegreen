@@ -54,5 +54,5 @@ git push origin main
 
 
 Expected Output
-✅
+
 GitHub Actions shows 2 passed with green checkmarks. Every push to main automatically runs the tests.

@@ -3,28 +3,21 @@ Perform Git operations to commit, push, merge branches, and create a pull reques
 
 Step 1 – Initialise repo & first commit
 
-# Initialise a local repository
-git init myproject
-cd myproject
-echo "# My DevOps Project" > README.md
-git add README.md
-git commit -m "Initial commit: add README"
-
-Step 2 – Create a feature branch & make changes
+clone into repo
+cd into it 
 
 git checkout -b feature/hello
+
 echo "Hello from feature branch" > hello.txt
 git add hello.txt
 git commit -m "feat: add hello.txt"
 
-Step 3 – Push to GitHub & open Pull Request
-
-git remote add origin https://github.com/<username>/myproject.git
 git push -u origin feature/hello
 
-On GitHub → go to your repo → click Compare & pull request → add a description → click Create pull request.
-Step 4 – Merge & push main
+compare and pull
+Merge Pull Request
+Confirm Merge
 
 git checkout main
-git merge feature/hello
-git push origin main
+git pull origin main
+git log --oneline
