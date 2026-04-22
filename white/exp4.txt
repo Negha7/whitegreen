@@ -1,16 +1,39 @@
 Q 04
 Create a CI pipeline using GitHub Actions to build and push a Docker image of a Python app to Docker Hub.
 
+app.py
+
+from flask import Flask
+app = Flask(__name__)
+@app.route('/')
+def home():
+    return "Hello from Dockerised Flask!"
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
+requirements.txt
+flask
+
+Dockerfile
+
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 5000
+CMD ["python", "app.py"]
+
+
 Step 1 – Add secrets to GitHub repo
 
-Repo → Settings → Secrets and variables → Actions → New repository secret:
+Repo → Settings → Secrets and variables → Action -> New repository secret:
 DOCKER_USERNAME — your Docker Hub username
 DOCKER_PASSWORD — your Docker Hub access token
 
 .github/workflows/docker-publish.yml
 
 name: Build and Push Docker Image
-
 on:
   push:
     branches: [ main ]
@@ -33,6 +56,12 @@ jobs:
 
       - name: Push to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/python-app:latest
+
+
+
+git add .
+git commit -m "CI pipeline"
+git push origin main
 
 
 Expected Output

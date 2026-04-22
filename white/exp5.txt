@@ -4,40 +4,44 @@ Configure a Jenkins pipeline to automate the building and deployment of a Docker
 Jenkins runs inside Docker — no Java installation needed on the host. The Docker socket is mounted so Jenkins can build and push images directly.
 Step 1 – Start Jenkins container
 
-# Create a persistent volume for Jenkins data
+docker login -u negha7
+
 docker volume create jenkins-data
+docker run -d --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins-data:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts
 
-# Run Jenkins (mounts Docker socket so it can build images)
-docker run -d \
-  --name jenkins \
-  -p 8080:8080 -p 50000:50000 \
-  -v jenkins-data:/var/jenkins_home \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  jenkins/jenkins:lts
 
-# Get the initial admin password
 docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+(copy tat password)
 
-Open http://localhost:8080, paste the password, install suggested plugins, then install the Docker Pipeline Plugin from Manage Plugins.
+http://localhost:8080
+(open and paste passwrd)
 
-Step 2 – Install Docker CLI inside Jenkins container
+docker exec -u root jenkins bash -c "apt-get update && apt-get install -y docker.io"
 
-docker exec -u root jenkins bash -c \
-  "apt-get update && apt-get install -y docker.io"
+👉 In Jenkins UI:
 
-Step 3 – Jenkinsfile (place in root of GitHub repo)
+Manage Jenkins(settings)
+Credentials
+Click (global)
+Click Add Credentials
+Fill:
+Username → your Docker Hub username
+Password → Docker Hub password / token
+ID → dockerhub-creds
+
+Jenkinsfile:
 
 pipeline {
     agent any
     environment {
-        IMAGE_NAME      = "myapp"
-        DOCKER_HUB_USER = "<your-dockerhub-username>"
+        IMAGE_NAME = "flask-app"
+        DOCKER_HUB_USER = "negha7"
     }
     stages {
         stage('Clone') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/<username>/<repo>.git'
+                    url: 'https://git.karunya.edu/URK23CS1001/devops.git'
             }
         }
         stage('Build Image') {
@@ -53,8 +57,8 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh '''
-                      echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                      docker push $DOCKER_HUB_USER/$IMAGE_NAME:latest
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    docker push $DOCKER_HUB_USER/$IMAGE_NAME:latest
                     '''
                 }
             }
@@ -67,9 +71,18 @@ pipeline {
     }
 }
 
-Step 4 – Jenkins pipeline setup
+git add Jenkinsfile
+git commit -m "added jenkins pipeline"
+git push origin main
 
-1. Jenkins → New Item → Pipeline
-2. Pipeline section → Pipeline script from SCM → Git → enter repo URL
-3. Manage Jenkins → Credentials → Add Docker Hub credentials with ID dockerhub-creds
-4. Click Build Now
+In Jenkins UI:
+New Item → Pipeline
+Pipeline → Pipeline script from SCM
+SCM → Git
+Paste your repo URL
+Save
+Build Now
+
+
+
+

@@ -8,7 +8,7 @@ cd <repo-name>
 
 Step 2 – Modify a file
 
-echo "Updated content" >> README.md
+echo "Updated content" >> README.md 
 cat README.md
 git diff
 

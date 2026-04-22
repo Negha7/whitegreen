@@ -1,6 +1,10 @@
 Q 06
 Use kubectl commands to create, scale, and manage Kubernetes resources like pods and deployments.
 
+Open Docker Desktop
+Enable Kubernetes
+Wait till status = Running
+
 Step 1 – Create a deployment
 
 kubectl create deployment myapp --image=nginx:latest
@@ -20,6 +24,7 @@ Step 3 – Expose, inspect & clean up
 
 kubectl expose deployment myapp --port=80 --type=NodePort
 kubectl get services
+kubectl get pods
 kubectl describe pod <pod-name>
 kubectl logs <pod-name>
 
@@ -52,3 +57,5 @@ spec:
 
 kubectl apply -f deployment.yaml
 kubectl get all
+
+kubectl version

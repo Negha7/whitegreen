@@ -2,13 +2,15 @@ Q 03
 Develop and demonstrate a simple monolithic application model using Python or Flask.
 
 A monolithic app bundles all features — UI, business logic, and data — into a single deployable unit. Below is a Student CRUD REST API in Flask.
-app.py – Complete monolithic app
+app.py 
 
 from flask import Flask, request, jsonify
-
 app = Flask(__name__)
 students = {}
 next_id = 1
+@app.route('/')
+def home():
+    return "Flask Monolithic App Running!"
 
 @app.route('/students', methods=['GET'])
 def get_students():
@@ -37,9 +39,9 @@ pip install flask
 python app.py
 
 # Add a student
-curl -X POST http://localhost:5000/students \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Alice","roll":"CS001"}'
 
-# List all students
-curl http://localhost:5000/students
+Invoke-RestMethod -Uri "http://127.0.0.1:5000/students" `
+-Method POST `
+-Headers @{ "Content-Type" = "application/json" } `
+-Body '{"name":"Alice","roll":"CS001"}'
+
